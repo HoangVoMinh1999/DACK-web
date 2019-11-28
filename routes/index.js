@@ -8,7 +8,6 @@ var products=require('../myDatabase/products');
 
 const MongoClient = require('mongodb').MongoClient;
 var uri = process.env.DB_LOCALHOST || process.env.DB_ATLAS;
-const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
 
 console.log(uri);
 /* GET home page. */
@@ -17,6 +16,7 @@ router.get('/', function(req, res, next) {
 });
 //------------------------------------------------
 router.get('/showProducts', function(req, res, next) {
+  const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
   client.connect(err => {
     var data=[];
     const collection = client.db("products").collection("products");
@@ -28,14 +28,15 @@ router.get('/showProducts', function(req, res, next) {
         console.log(item);
         data.push(item);
       }
+      client.close();
     });
-    // client.close();
     res.render('products',{title:'Products',products:data});
   });
 });
 //------------------------------------------------
 router.get('/showProducts:type',function(req,res,next){
   var data=[];
+  const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
   client.connect(err => {
     const collection = client.db("products").collection("products");
     let query={
@@ -48,14 +49,15 @@ router.get('/showProducts:type',function(req,res,next){
         console.log(item);
         data.push(item);
       }
+      client.close();
     });
-    // client.close();
     res.render('products',{title:'Products',products:data});
   });
 });
 //------------------------------------------------
 router.get('/show:brand',function(req,res,next){
   var data=[];
+  const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
   client.connect(err => {
     const collection = client.db("products").collection("products");
     let query={
@@ -68,18 +70,19 @@ router.get('/show:brand',function(req,res,next){
         console.log(item);
         data.push(item);
       }
+      client.close();
     });
-    // client.close();
     res.render('products',{title:'Products',products:data});
   });
 });
 //--------------------------------------------------
 router.get('/detail:_id',function(req,res,next){
   var data=[];
+  const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
   client.connect(err => {
     const collection = client.db("products").collection("products");
     let query={
-      _id: req.params._id,
+      _id: require('mongoose').Types.ObjectId(req.params._id),
     };
     var cursor=collection.find(query);
     cursor.each(function(err,item){
@@ -88,9 +91,9 @@ router.get('/detail:_id',function(req,res,next){
         console.log(item);
         data.push(item);
       }
+      client.close();
     });
-    client.close();
-    res.render('products',{title:'Products',products:data});
+    res.render('product_detail',{title:'Detail',products:data});
   });
 });
 
