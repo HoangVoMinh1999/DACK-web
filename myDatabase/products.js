@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var mongoose=require('mongoose');
 var products=require('../models/products');
 var express = require('express');
