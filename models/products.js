@@ -10,29 +10,16 @@ const client = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: 
 
 
 //--- create Collection
-MongoClient.connect(uri, 
-    { useNewUrlParser: true,useUnifiedTopology: true },
-  function(err, client) {
-    console.log("Connected successfully to server");
-  
-    const db = client.db("products");
-  
-    findDocuments(db, function() {
-        client.close();
-      });
-  });
-  
-  const findDocuments = function(db, callback) {
-    // Get the documents collection
-    const collection = db.collection('products');
-    // Find some documents
-    collection.find({}).toArray(function(err, docs) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(docs)
-      callback(docs);
+client.connect(err => {
+    console.log("Connected !!!")
+    client.close();
+});
+
+client.connect(err => {
+    const collection = client.db("products").createCollection("products",function(err,res){
+        if (err) throw err;
+        console.log("create database successfully !!!");
     });
-  }
-
-
+    client.close();
+});
 module.exports= router;
