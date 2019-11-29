@@ -24,7 +24,13 @@ var historyRouter=require('./routes/history')
 var app = express();
 
 var uri = process.env.DB_LOCALHOST || process.env.DB_ATLAS;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(uri, {
+  auth: {
+    user: HoangVM,
+    password: 11041999
+  },
+},
+{ useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
